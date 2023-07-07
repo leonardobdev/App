@@ -4,10 +4,10 @@ const cacheName = 'MyFancyCacheName_v1';
 // Assets to precache
 const precachedAssets = [
   '/',
-  'index.html',
-  'style.css',
-  'app.js',
-  'logo.png'
+  '/index.html',
+  '/style.css',
+  '/app.js',
+  '/logo.png'
 ];
 
 self.addEventListener('install', (event) => {
