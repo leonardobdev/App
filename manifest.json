@@ -51,11 +51,10 @@
 			"purpose": "maskable"
 		}
 	],
-	"start_url": "?source=pwa",
+	"start_url": "/test/?source=pwa",
 	"background_color": "#000000",
 	"display": "fullscreen",
-	"scope": "",
-	"id": "?source=pwa",
+	"id": "/test/?source=pwa",
 	"theme_color": "#000000",
 	"description": "Hello"
 }
