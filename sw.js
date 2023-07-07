@@ -8,15 +8,16 @@ const precachedAssets = [
   "/logo.png"
 ];
 
-self.addEventListener("install", function() {
-  event.waitUntil(caches.open(cacheName).then((cache) => {
-    cache.addAll(precachedAssets);
-  }));
-});
+self.oninstall = (event) => {
+  event.waitUntil(
+    caches.open(cacheName).then((cache) => {
+     cache.addAll(precachedAssets);
+    }
+  ));
+};
 
-self.addEventListener("activate", (event) => {
+self.onactivate = (event) => {
   const cacheAllowlist = ["v2"];
-
   event.waitUntil(
     caches.forEach((cache, cacheName) => {
       if (!cacheAllowlist.includes(cacheName)) {
@@ -24,17 +25,10 @@ self.addEventListener("activate", (event) => {
       }
     })
   );
-});
+};
 
-self.addEventListener("fetch", (event) => {
-  const url = new URL(event.request.url);
-  const isPrecachedRequest = precachedAssets.includes(url.pathname);
-
-  if (isPrecachedRequest) {
-    event.respondWith(caches.open(cacheName).then((cache) => {
-      return cache.match(event.request.url);
-    }));
-  } else {
-    return;
-  }
-});
+self.onfetch = (event) => {
+  event.respondWith(caches.open(cacheName).then((cache) => {
+    return cache.match(event.request.url) || fetch(event.request.url);
+  }));
+};

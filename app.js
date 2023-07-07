@@ -1,9 +1,7 @@
 if ("serviceWorker" in navigator) {
-	navigator.serviceWorker.register("sw.js")
-	.then(function() {
+	navigator.serviceWorker.register("sw.js").then(() => {
 		console.log("service worker registered");
-	})
-	.catch(function() {
+	}).catch(() => {
 		console.warn("service worker failed");
 	});
 }
