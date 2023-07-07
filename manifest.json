@@ -1,6 +1,7 @@
 {
 	"short_name": "leonardobdev",
 	"name": "leonardobdev",
+	"start_url": "/test/?source=pwa",
 	"icons": [
 		{
 			"src": "src/img/x48.png",
@@ -51,10 +52,8 @@
 			"purpose": "maskable"
 		}
 	],
-	"start_url": "/test/?source=pwa",
+	"theme_color": "#000000",
 	"background_color": "#000000",
 	"display": "fullscreen",
-	"id": "/test/?source=pwa",
-	"theme_color": "#000000",
-	"description": "Hello"
+	"orientation": "portrait"
 }
