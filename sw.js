@@ -8,7 +8,7 @@ self.addEventListener('install', function (event) {
 				'src/css/style.css',
 				'src/img/logo.svg',
 				'app.js',
-				'manifest.js',
+				'manifest.js'
 			]);
 		})
 	)
