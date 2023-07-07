@@ -7,11 +7,12 @@ const addResourcesToCache = async (resources) => {
 self.addEventListener("install", (event) => {
 	event.waitUntil(
 		addResourcesToCache([
-			'index.html',
-			'src/css/style.css',
-			'src/img/logo.svg',
-			'app.js',
-			'manifest.js'
+			"/test/",
+			'/test/index.html',
+			'/test/src/css/style.css',
+			'/test/src/img/logo.svg',
+			'/test/app.js',
+			'/test/manifest.js'
 		])
 	);
 });
