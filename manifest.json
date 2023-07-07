@@ -1,16 +1,13 @@
 {
   "name": "Test",
-  "short_name": "Test",
-  "description": "Test",
-  "start_url": "/",
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff",
-  "display": "standalone",
   "icons": [
     {
       "src": "logo.png",
       "sizes": "512x512",
-      "purpose": "maskable"
+      "type": "image/png"
     }
-  ]
+  ],
+  "start_url": "index.html",
+  "display": "standalone",
+  "orientation": "landscape"
 }
