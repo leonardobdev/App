@@ -1,17 +1,19 @@
-var CACHE_NAME = 'testServiceworker-v1';
+const CACHE_NAME = 'testServiceworker-v1';
 
-self.addEventListener('install', function (event) {
+const addResourcesToCache = async (resources) => {
+	const cache = await caches.open(CACHE_NAME);
+	await cache.addAll(resources);
+};
+self.addEventListener("install", (event) => {
 	event.waitUntil(
-		caches.open(CACHE_NAME).then(function (cache) {
-			return cache.addAll([
-				'index.html',
-				'src/css/style.css',
-				'src/img/logo.svg',
-				'app.js',
-				'manifest.js'
-			]);
-		})
-	)
+		addResourcesToCache([
+			'index.html',
+			'src/css/style.css',
+			'src/img/logo.svg',
+			'app.js',
+			'manifest.js'
+		])
+	);
 });
 /*
 self.addEventListener('activate', function activator(event) {
