@@ -1,0 +1,33 @@
+.bg-black {
+	background: black;
+}
+.text-light {
+	color: white;
+}
+.text-center {
+	text-align: center;
+}
+.d-inline {
+	display: inline;
+}
+.d-inline-block {
+	display: inline-block;
+}
+.p-2 {
+	height: 40px;
+}
+.p-3 {
+	height: 60px;
+}
+.w-auto {
+	width: auto;
+}
+.align-middle {
+	align-items: middle;
+}
+.rounded-3 {
+	border-radius: 3px;
+}
+a:link {
+	color: cornflowerblue;
+}
