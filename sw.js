@@ -13,7 +13,7 @@ self.addEventListener('install', function (event) {
 		})
 	)
 });
-
+/*
 self.addEventListener('activate', function activator(event) {
 	event.waitUntil(
 		caches.keys().then(function (keys) {
@@ -36,3 +36,4 @@ self.addEventListener('fetch', function (event) {
 		})
 	);
 });
+*/
