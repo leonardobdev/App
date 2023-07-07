@@ -2,15 +2,17 @@
 	"short_name": "leonardobdev",
 	"name": "leonardobdev",
 	"start_url": "/test/?source=pwa",
+	"id": "/test/?source=pwa",
+	"scope": "/test/",
 	"icons": [
 		{
-			"src": "src/img/x48.png",
+			"src": "/test/src/img/x48.png",
 			"sizes": "48x48",
 			"type": "image/png",
 			"purpose": "any"
 		},
 		{
-			"src": "src/img/x72.png",
+			"src": "/test/src/img/x72.png",
 			"sizes": "72x72",
 			"type": "image/png",
 			"purpose": "any"
@@ -54,6 +56,7 @@
 	],
 	"theme_color": "#000000",
 	"background_color": "#000000",
+	"description": "Test",
 	"display": "fullscreen",
 	"orientation": "portrait"
 }
