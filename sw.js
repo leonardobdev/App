@@ -44,7 +44,7 @@ self.addEventListener("activate", function (e) {
   e.waitUntil(
     caches.keys().then(function (keyList) {
       var cacheWhitelist = keyList.filter(function (key) {
-        return key.indexOf(APP_PREFIX)
+        return key.indexOf(APP_NAME)
       })
       cacheWhitelist.push(CACHE_NAME)
       return Promise.all(keyList.map(function (key, i) {
