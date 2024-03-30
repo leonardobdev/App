@@ -25,27 +25,8 @@ var BLACKLIST = [];
 [WHITELIST, BLACKLIST] = [WHITELIST, BLACKLIST].map(l => l.map(v => "/" + APP_NAME + v));
 
 
-self.addEventListener('fetch', async (event) => {
-
-  event.respondWith(
-
-    caches.match(event.request).then(
-      async (request) => {
-
-        var requestEtag = event.request.headers.get('If-None-Match');
-        var etag = request.headers.get('ETag');
-
-        if (etag === requestEtag) {
-
-          return request;
-
-        } else {
-
-          return fetch(event.request);
-
-        }
-      }
-    )
-  )
-}
-);
+self.addEventListener('fetch', async (e) => {
+  e.respondWith(caches.match(e.request).then(async (response) => {
+    return response || fetch(e.request);
+  }));
+});
