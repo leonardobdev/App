@@ -24,61 +24,38 @@ var WHITELIST = [
 var BLACKLIST = [];
 [WHITELIST, BLACKLIST] = [WHITELIST, BLACKLIST].map(l => l.map(v => "/" + APP_NAME + v));
 
-self.addEventListener('install', function (event) {
-  // Perform install steps
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(function (cache) {
-        console.log('Cache aberto');
-        return cache.addAll(WHITELIST);
-      })
-  );
-});
 
-// Evento fetch
-self.addEventListener('fetch', function (event) {
+self.addEventListener('fetch', async (event) => {
+
   event.respondWith(
-    caches.open(CACHE_NAME).then(async function (cache) {
-      return cache.match(event.request).then(function (response) {
-        // Verificar se há resposta em cache
-        if (response) {
-          return response;
+
+    caches.match(event.request).then(
+      async (request) => {
+
+        var requestEtag = event.request.headers.get('If-None-Match');
+        var etag = request.headers.get('ETag');
+
+        if (etag === requestEtag) {
+
+          return request
+
+        } else {
+
+          var response = fetch(e.request).then(() => {
+
+            caches.open(CACHE_NAME).then((cache) => {
+              
+              cache.delete(event.request);
+              
+              cache.put(event.request, response);
+              
+              return response;
+              
+            });
+          })
         }
-
-        // Se não houver resposta em cache, buscar da rede
-        return fetch(event.request).then(function (networkResponse) {
-          // Verificar se a resposta da rede é válida
-          if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
-            return networkResponse;
-          }
-
-          // Clonar a resposta da rede
-          var responseToCache = networkResponse.clone();
-
-          // Armazenar a nova resposta em cache
-          cache.put(event.request, responseToCache);
-
-          return networkResponse;
-        });
-      });
-    })
-  );
-});
-
-// Evento de ativação do Service Worker
-self.addEventListener('activate', function (event) {
-
-  var cacheWhitelist = ['pages-cache-v1', 'blog-posts-cache-v1'];
-
-  event.waitUntil(
-    caches.keys().then(function (cacheNames) {
-      return Promise.all(
-        cacheNames.map(function (cacheName) {
-          if (cacheWhitelist.indexOf(cacheName) === -1) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
-  );
-});
+      }
+    )
+  )
+}
+);
