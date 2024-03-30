@@ -1,6 +1,6 @@
 window.addEventListener("load", function () {
   var isOnline = true;
-  var isWebAPK = window.matchMedia('(display-mode: standalone)').matches;
+  var isWebAPK = window.matchMedia("(display-mode: standalone)").matches;
   console.log("[*] The app is running as a " + (isWebAPK ? "WebAPK" : "Browser-Page"));
 
   function checkOnlineStatus() {
@@ -15,17 +15,18 @@ window.addEventListener("load", function () {
   }
 
   function init() {
-    if ('serviceWorker' in navigator) {
+    if (navigator.serviceWorker) {
       console.log("[*] Register serviceWorker ...");
-      navigator.serviceWorker.register('/App/sw.js', { scope: "/App/" }).then(function (registration) {
-        console.log('[*] ServiceWorker registration successful with scope: ', registration.scope);
+      navigator.serviceWorker.register("/App/sw.js", { scope: "/App/" }).then(function (registration) {
+        console.log("[*] ServiceWorker registration successful with scope: ", registration.scope);
       }, function (err) {
-        console.log('[*] ServiceWorker registration failed: ', err);
+        console.log("[*] ServiceWorker registration failed: ", err);
       });
+    } else {
+      console.log("[*] ServiceWorker not supported by your browser!");
     }
-    else console.log("[*] ServiceWorker not supported by your browser!");
 
-    window.addEventListener("beforeinstallprompt", function (event) {
+    window.addEventListener("beforeinstallprompt", function () {
       console.log("[*] WebAPK install event fired!");
     });
 
