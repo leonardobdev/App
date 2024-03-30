@@ -4,7 +4,6 @@ var CACHE_NAME = APP_PREFIX + VERSION
 var URLS = [
   '/App/',
   '/App/index.html',
-  '/App/manifest.json',
   '/App/src/js/main.js',
   '/App/src/css/main.css',
   '/App/src/img/logo.svg',

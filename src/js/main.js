@@ -7,10 +7,10 @@ window.addEventListener("load", function () {
     isOnline = navigator.onLine;
     console.log("[*] Connection status: " + (isOnline ? "online" : "offline"));
     if (isOnline) {
-      console.log("You are online!");
+      console.log("[*] You are online!");
     }
     else {
-      console.log("You are offline!");
+      console.log("[*] You are offline!");
     }
   }
 
