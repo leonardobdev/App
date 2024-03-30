@@ -24,23 +24,31 @@ var WHITELIST = [
 var BLACKLIST = [];
 [WHITELIST, BLACKLIST] = [WHITELIST, BLACKLIST].map(l => l.map(v => "/" + APP_NAME + v));
 
-self.addEventListener('fetch', (event) => {
-  event.respondWith(caches.match(event.request).then((response) => {
+self.addEventListener('fetch', event => {
+  const request = event.request;
+
+  // Verifica se o cache possui a requisição
+  caches.match(request).then(response => {
     if (response) {
-      // Verifica se o cache é identico
-      const etag = response.headers.get('ETag');
-      const requestEtag = event.request.headers.get('If-None-Match');
-      if (etag === requestEtag) {
-        return response;
-      } else {
-        // O cache não é identico, deleta e busca a atualização
-        caches.delete(CACHE_NAME, event.request).then(() => {
-          return fetch(event.request);
-        });
-      }
+      // Verifica se o conteúdo do cache é idêntico à requisição
+      fetch(request).then(updatedResponse => {
+        if (updatedResponse.status === 200 && response.headers.get('etag') === updatedResponse.headers.get('etag')) {
+          // O cache é idêntico, responde com o cache
+          event.respondWith(response);
+        } else {
+          // O cache não é idêntico, exclui o cache e responde com o novo conteúdo
+          caches.delete(request).then(() => {
+            event.respondWith(updatedResponse);
+            caches.add(request, updatedResponse);
+          });
+        }
+      });
     } else {
-      // O recurso não está em cache, busca da rede
-      return fetch(event.request);
+      // O cache não possui a requisição, busca o novo conteúdo e o armazena
+      fetch(request).then(response => {
+        event.respondWith(response);
+        caches.add(request, response);
+      });
     }
-  }));
+  });
 });
