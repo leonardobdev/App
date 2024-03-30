@@ -35,6 +35,7 @@ window.addEventListener("load", function () {
         event.prompt();
         btn.remove();
       };
+      btn.clock();
     });
 
     checkOnlineStatus();
