@@ -26,28 +26,30 @@ var BLACKLIST = [];
 
 self.addEventListener('fetch', event => {
   const request = event.request;
-  // Verifica se o cache possui a requisição
-  caches.match(request).then(async response => {
-    if (response) {
-      // Verifica se o conteúdo do cache é idêntico à requisição
-      fetch(request).then(async updatedResponse => {
-        if (updatedResponse.status === 200 && response.headers.get('etag') === updatedResponse.headers.get('etag')) {
-          // O cache é idêntico, responde com o cache
-          event.respondWith(response);
-        } else {
-          // O cache não é idêntico, exclui o cache e responde com o novo conteúdo
-          caches.delete(request).then(async () => {
-            event.respondWith(updatedResponse);
-            caches.add(request, updatedResponse);
-          });
-        }
-      });
-    } else {
-      // O cache não possui a requisição, busca o novo conteúdo e o armazena
-      fetch(request).then(async response => {
-        event.respondWith(response);
-        caches.add(request, response);
-      });
-    }
-  });
+  event.respondWith(
+    // Verifica se o cache possui a requisição
+    caches.match(request).then(async response => {
+      if (response) {
+        // Verifica se o conteúdo do cache é idêntico à requisição
+        fetch(request).then(async updatedResponse => {
+          if (updatedResponse.status === 200 && response.headers.get('etag') === updatedResponse.headers.get('etag')) {
+            // O cache é idêntico, responde com o cache
+            return response;
+          } else {
+            // O cache não é idêntico, exclui o cache e responde com o novo conteúdo
+            caches.delete(request).then(async () => {
+              caches.add(request, updatedResponse);
+              return updatedResponse;
+            });
+          }
+        });
+      } else {
+        // O cache não possui a requisição, busca o novo conteúdo e o armazena
+        fetch(request).then(async response => {
+          caches.add(request, response);
+          return response;
+        });
+      }
+    })
+  )
 });
