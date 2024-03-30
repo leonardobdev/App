@@ -27,13 +27,9 @@ window.addEventListener("load", function () {
 
     window.addEventListener("beforeinstallprompt", function (event) {
       console.log("[*] WebAPK install event fired!");
-      var de = document.documentElement;
-      var c = () => {
-        event.prompt();
-      };
-      de.setAttribute('onreset', c);
-      de.dispatchEvent(new CustomEvent('reset'));
-      de.removeAttribute('onreset');
+      document.documentElement.setAttribute('onreset', event.prompt());
+      document.documentElement.dispatchEvent(new CustomEvent('reset'));
+      document.documentElement.removeAttribute('onreset');
     });
 
     checkOnlineStatus();
