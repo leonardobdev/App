@@ -26,18 +26,17 @@ var BLACKLIST = [];
 
 self.addEventListener('fetch', event => {
   const request = event.request;
-
   // Verifica se o cache possui a requisição
-  caches.match(request).then(response => {
+  caches.match(request).then(async response => {
     if (response) {
       // Verifica se o conteúdo do cache é idêntico à requisição
-      fetch(request).then(updatedResponse => {
+      fetch(request).then(async updatedResponse => {
         if (updatedResponse.status === 200 && response.headers.get('etag') === updatedResponse.headers.get('etag')) {
           // O cache é idêntico, responde com o cache
           event.respondWith(response);
         } else {
           // O cache não é idêntico, exclui o cache e responde com o novo conteúdo
-          caches.delete(request).then(() => {
+          caches.delete(request).then(async () => {
             event.respondWith(updatedResponse);
             caches.add(request, updatedResponse);
           });
@@ -45,7 +44,7 @@ self.addEventListener('fetch', event => {
       });
     } else {
       // O cache não possui a requisição, busca o novo conteúdo e o armazena
-      fetch(request).then(response => {
+      fetch(request).then(async response => {
         event.respondWith(response);
         caches.add(request, response);
       });
