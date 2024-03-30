@@ -31,10 +31,10 @@ window.addEventListener("load", function () {
       btn.textContent = 'install';
       btn.style.display = 'none';
       document.body.appendChild(btn);
-      btn.onclick((e) => {
+      btn.onclick = (e) => {
         e.prompt();
         btn.remove();
-      });
+      };
     });
 
     checkOnlineStatus();
