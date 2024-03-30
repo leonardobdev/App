@@ -57,6 +57,6 @@
 	"theme_color": "#000000",
 	"background_color": "#000000",
 	"description": "App",
-	"display": "fullscreen",
+	"display": "standalone",
 	"orientation": "portrait"
 }
