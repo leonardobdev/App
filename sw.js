@@ -41,16 +41,18 @@ self.addEventListener('fetch', async (event) => {
 
         } else {
 
-          var response = fetch(e.request).then(() => {
+          var response = fetch(e.request).then(async () => {
 
-            caches.open(CACHE_NAME).then((cache) => {
-              
-              cache.delete(event.request);
-              
-              cache.put(event.request, response);
-              
-              return response;
-              
+            caches.open(CACHE_NAME).then(async (cache) => {
+
+              cache.delete(event.request).then(async () => {
+
+                cache.put(event.request, response).then(async () => {
+
+                  return response;
+
+                })
+              })
             });
           })
         }
