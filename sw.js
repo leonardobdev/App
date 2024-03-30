@@ -23,7 +23,7 @@ var WHITELIST = [
 ];
 var BLACKLIST = [];
 
-[WHITELIST, BLACKLIST].map(l =>  l.map((v) => "/" + APP_NAME + v));
+[WHITELIST, BLACKLIST].map(l => l && l.map(v => "/" + APP_NAME + v));
 
 self.addEventListener("fetch", function (e) {
   e.respondWith(
