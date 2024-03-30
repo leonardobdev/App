@@ -22,21 +22,11 @@ var WHITELIST = [
   "/src/img/x1024.png",
 ];
 var BLACKLIST = [];
-[WHITELIST, BLACKLIST] = [WHITELIST, BLACKLIST].map(l => l.map(v => "/" + APP_NAME + v));
+[WHITELIST, BLACKLIST] = [WHITELIST, BLACKLIST].map((l) => l.map((v) => "/" + APP_NAME + v));
 
-self.addEventListener('install', async event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      console.log("[sw] install event");
-      return cache.addAll(WHITELIST);
-    }
-    )
-  );
-});
-
-self.addEventListener('fetch', async  event => {
+self.addEventListener('fetch', async (event) => {
   event.respondWith(
-    caches.match(event.request).then(response => {
+    caches.match(event.request).then((response) => {
       if (response) {
         console.log("[SW] responding with cache: " + event.request.url);
         return response;
@@ -44,23 +34,47 @@ self.addEventListener('fetch', async  event => {
         console.log("[SW] fetching: " + event.request.url);
         return fetch(event.request);
       } else {
-        fetch(event.request).then(response => {
+        fetch(event.request).then((response) => {
           if (!response || response.status !== 200 || response.type !== 'basic') {
             console.log("[SW] fetching: " + event.request.url);
             return response;
           }
           var responseToCache = response.clone();
-          caches.open(CACHE_NAME).then(cache => {
+          caches.open(CACHE_NAME).then((cache) => {
             console.log("[SW] caching: " + event.request.url);
             cache.put(event.request, responseToCache);
           }
           );
           console.log("[SW] responding with cache: " + event.request.url);
           return response;
-        }
-        );
+        });
       }
-    }
-    )
-  );
+    }));
+});
+
+self.addEventListener('install', async (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      console.log("[sw] install event");
+      return cache.addAll(WHITELIST);
+    }));
+});
+
+self.addEventListener('activate', async (e) => {
+  e.waitUntil(
+    caches.keys().then(async (keyList) => {
+
+      var cacheWhitelist = keyList.filter(async (key) => {
+        return key.indexOf(APP_PREFIX);
+      })
+
+      cacheWhitelist.push(CACHE_NAME)
+
+      return Promise.all(keyList.map(async (key, i) => {
+        if (cacheWhitelist.indexOf(key) === -1) {
+          console.log('[sw] deleting cache : ' + keyList[i]);
+          return caches.delete(keyList[i]);
+        }
+      }));
+    }))
 });
