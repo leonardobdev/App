@@ -27,6 +27,13 @@ var BLACKLIST = [];
 
 self.addEventListener('fetch', async (e) => {
   e.respondWith(caches.match(e.request).then(async (response) => {
-    return response || fetch(e.request);
+    if (response) {
+      console.log("[sw] responding: " + e.request);
+
+      return response;
+    } else {
+      console.log("[sw] fetching: " + e.request);
+      return fetch(e.request);
+    }
   }));
 });
