@@ -27,7 +27,6 @@ window.addEventListener("load", function () {
 
     window.addEventListener("beforeinstallprompt", function (event) {
       console.log("[*] WebAPK install event fired!");
-      btn.click();
       var de = document.documentElement;
       var c = () => {
         event.prompt();
