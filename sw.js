@@ -24,52 +24,41 @@ var WHITELIST = [
 var BLACKLIST = [];
 [WHITELIST, BLACKLIST] = [WHITELIST, BLACKLIST].map(l => l.map(v => "/" + APP_NAME + v));
 
-// Install Event
-self.addEventListener('install', function(event) {
-	console.log("[SW] install event: ",event);
-	// Perform install steps
-	event.waitUntil(
-		caches.open(CACHE_NAME).then(
-			function(cache) {
-				console.log('[SW] Opened cache: ',cache);
-				return cache.addAll(WHITELIST);
-			}
-		)
-	);
+self.addEventListener('install', (event) => {
+  console.log('Service Worker: Instalando...');
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(urlsParaCachear);
+    })
+  );
 });
 
+// Ativação do Service Worker
+self.addEventListener('activate', (event) => {
+  console.log('Service Worker: Ativando...');
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          if (cacheName !== CACHE_NAME) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+});
 
-// Fetch Event
-self.addEventListener('fetch', function(event) {
-	console.log("[SW] fetch event: ",event);
-	event.respondWith(
-		caches.match(event.request).then(
-			function(response) {
-				// Cache hit - return response
-				if (response) return response;
-				// What cache strategy should be used? => cacheAll (boolean flag)
-				else if (!CACHE_ALL || BLACKLIST.indexOf(event.request) !== -1) return fetch(event.request);
-				else {
-					fetch(event.request).then(
-						// Try to cache new requests directly 
-						function(response) {
-							// Check if we received a valid response
-							if(!response || response.status !== 200 || response.type !== 'basic') return response;
-							// IMPORTANT: Clone the response. A response is a stream
-							// and because we want the browser to consume the response
-							// as well as the cache consuming the response, we need
-							// to clone it so we have two streams.
-							var responseToCache = response.clone();
-							caches.open(CACHE_NAME).then(
-								function(cache) {
-									cache.put(event.request, responseToCache);
-								}
-							);
-							return response;
-						}
-					);
-				}
-			}
-		)
-	);
+// Interceptação de requisições
+self.addEventListener('fetch', (event) => {
+  console.log('Service Worker: Interceptando requisição...');
+  event.respondWith(
+    caches.match(event.request).then((response) => {
+      if (response) {
+        console.log('Service Worker: Retornando resposta do cache...');
+        return response;
+      }
+      return fetch(event.request);
+    })
+  );
 });
