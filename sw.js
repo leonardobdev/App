@@ -37,11 +37,11 @@ self.addEventListener('fetch', async (event) => {
 
         if (etag === requestEtag) {
 
-          return request
+          return request;
 
         } else {
 
-          return response;
+          return fetch(event.request);
 
         }
       }
