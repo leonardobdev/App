@@ -24,16 +24,38 @@ var WHITELIST = [
 var BLACKLIST = [];
 [WHITELIST, BLACKLIST] = [WHITELIST, BLACKLIST].map(l => l.map(v => "/" + APP_NAME + v));
 
+self.addEventListener('install', function (event) {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(
+      function (cache) {
+        return cache.addAll(WHITELIST);
+      }
+    )
+  );
+});
 
-self.addEventListener('fetch', async (e) => {
-  e.respondWith(caches.match(e.request).then(async (response) => {
-    if (response) {
-      console.log("[sw] responding: " + e.request);
 
-      return response;
-    } else {
-      console.log("[sw] fetching: " + e.request);
-      return fetch(e.request);
-    }
-  }));
+self.addEventListener('fetch', function (event) {
+  event.respondWith(
+    caches.match(event.request).then(
+      function (response) {
+        if (response) return response;
+        else if (!CACHE_ALL || BLACKLIST.indexOf(event.request) !== -1) return fetch(event.request);
+        else {
+          fetch(event.request).then(
+            function (response) {
+              if (!response || response.status !== 200 || response.type !== 'basic') return response;
+              var responseToCache = response.clone();
+              caches.open(CACHE_NAME).then(
+                function (cache) {
+                  cache.put(event.request, responseToCache);
+                }
+              );
+              return response;
+            }
+          );
+        }
+      }
+    )
+  );
 });
