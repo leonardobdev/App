@@ -10,7 +10,7 @@ window.addEventListener("load", function () {
       console.log("You are online!");
     }
     else {
-      console.log("title", "You are offline!");
+      console.log("You are offline!");
     }
   }
 
