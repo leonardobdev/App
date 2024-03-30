@@ -1,3 +1,3 @@
 if (navigator.serviceWorker) {
-    navigator.serviceWorker.register('/test/sw.js', {scope: '/test/'})
+    navigator.serviceWorker.register('/App/sw.js', {scope: '/App/'})
   }

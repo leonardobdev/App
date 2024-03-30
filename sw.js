@@ -1,13 +1,13 @@
-var APP_PREFIX = 'testServiceworker_'     // Identifier for this app (this needs to be consistent across every cache update)
+var APP_PREFIX = 'App_'     // Identifier for this app (this needs to be consistent across every cache update)
 var VERSION = 'v1'                        // Version of the off-line cache (change this value everytime you want to update cache)
 var CACHE_NAME = APP_PREFIX + VERSION
 var URLS = [                              // Add URL you want to cache in this list.
-  '/test/',                               // If you have separate JS/CSS files,
-  '/test/index.html',                     // add path to those files here
-  '/test/src/css/style.css',
-  '/test/src/img/logo.svg',
-  '/test/app.js',
-  '/test/manifest.json'
+  '/App/',                               // If you have separate JS/CSS files,
+  '/App/index.html',                     // add path to those files here
+  '/App/src/css/style.css',
+  '/App/src/img/logo.svg',
+  '/App/app.js',
+  '/App/manifest.json'
 ]
 
 // Respond with cached resources
