@@ -54,7 +54,7 @@ self.addEventListener('fetch', (event) => {
   console.log('Service Worker: Interceptando requisição...');
   event.respondWith(
     caches.match(event.request).then((response) => {
-      if (response) {
+      if (response && response.url === event.request.url) {
         console.log('Service Worker: Retornando resposta do cache...');
         return response;
       }
