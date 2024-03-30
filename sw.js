@@ -37,8 +37,8 @@ self.addEventListener('install', async event => {
 self.addEventListener('fetch', async  event => {
   event.respondWith(
     caches.match(event.request).then(response => {
-      console.log("[SW] responding with cache: " + event.request.url);
       if (response) {
+        console.log("[SW] responding with cache: " + event.request.url);
         return response;
       } else if (!CACHE_ALL || BLACKLIST.indexOf(event.request) !== -1) {
         console.log("[SW] fetching: " + event.request.url);
