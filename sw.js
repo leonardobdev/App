@@ -18,7 +18,7 @@ var URLS = [
   '/App/src/img/x192.png',
   '/App/src/img/x384.png',
   '/App/src/img/x512.png',
-  '/App/src/img/x1024.png',
+  '/App/src/img/x1024.png'
 ]
 
 self.addEventListener('fetch', function (e) {
