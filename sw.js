@@ -24,58 +24,52 @@ var WHITELIST = [
 var BLACKLIST = [];
 [WHITELIST, BLACKLIST] = [WHITELIST, BLACKLIST].map(l => l.map(v => "/" + APP_NAME + v));
 
-self.addEventListener("fetch", function (e) {
-  console.log('[SW] fetch request: ' + e.request.url);
-  e.respondWith(
-    caches.match(e.request).then(function (response) {
-      if (response) {
-        console.log('[SW] responding with cache: ' + e.request.url);
-        return response;
-      } else if (!CACHE_ALL || BLACKLIST.indexOf(e.request) !== -1) {
-        console.log('[SW] file is not cached, fetching: ' + e.request.url);
-        return fetch(e.request);
-      } else {
-        fetch(e.request).then(
-          function (response) {
-            if (!response || response.status !== 200 || response.type !== 'basic') {
-              console.log('[SW] responding with cache: ' + e.request.url);
-              return response;
-            }
-            var responseToCache = response.clone();
-            caches.open(CACHE_NAME).then(function (cache) {
-              cache.put(e.request, responseToCache);
-            });
-            console.log('[SW] responding with cache: ' + e.request.url);
-            return response;
-          }
-        );
-      }
-    })
-  );
+// Install Event
+self.addEventListener('install', function(event) {
+	console.log("[SW] install event: ",event);
+	// Perform install steps
+	event.waitUntil(
+		caches.open(CACHE_NAME).then(
+			function(cache) {
+				console.log('[SW] Opened cache: ',cache);
+				return cache.addAll(WHITELIST);
+			}
+		)
+	);
 });
 
-self.addEventListener("install", function (e) {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then(function (cache) {
-      console.log("[SW] installing cache: " + CACHE_NAME);
-      return cache.addAll(WHITELIST);
-    })
-  )
-});
 
-self.addEventListener("activate", function (e) {
-  e.waitUntil(
-    caches.keys().then(function (keyList) {
-      var cacheWhitelist = keyList.filter(function (key) {
-        return key.indexOf(APP_NAME);
-      });
-      cacheWhitelist.push(CACHE_NAME)
-      return Promise.all(keyList.map(function (key, i) {
-        if (cacheWhitelist.indexOf(key) === -1) {
-          console.log("[SW] deleting cache : " + keyList[i]);
-          return caches.delete(keyList[i]);
-        }
-      }));
-    })
-  )
+// Fetch Event
+self.addEventListener('fetch', function(event) {
+	console.log("[SW] fetch event: ",event);
+	event.respondWith(
+		caches.match(event.request).then(
+			function(response) {
+				// Cache hit - return response
+				if (response) return response;
+				// What cache strategy should be used? => cacheAll (boolean flag)
+				else if (!CACHE_ALL || BLACKLIST.indexOf(event.request) !== -1) return fetch(event.request);
+				else {
+					fetch(event.request).then(
+						// Try to cache new requests directly 
+						function(response) {
+							// Check if we received a valid response
+							if(!response || response.status !== 200 || response.type !== 'basic') return response;
+							// IMPORTANT: Clone the response. A response is a stream
+							// and because we want the browser to consume the response
+							// as well as the cache consuming the response, we need
+							// to clone it so we have two streams.
+							var responseToCache = response.clone();
+							caches.open(CACHE_NAME).then(
+								function(cache) {
+									cache.put(event.request, responseToCache);
+								}
+							);
+							return response;
+						}
+					);
+				}
+			}
+		)
+	);
 });
