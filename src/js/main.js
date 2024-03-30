@@ -32,7 +32,7 @@ window.addEventListener("load", function () {
       btn.style.display = 'none';
       document.body.appendChild(btn);
       btn.onclick = (e) => {
-        e.prompt();
+        event.prompt();
         btn.remove();
       };
     });
