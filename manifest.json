@@ -1,9 +1,14 @@
 {
-	"short_name": "App",
 	"name": "App",
+	"short_name": "App",
+	"description": "App",
+	"scope": "/App/",
 	"start_url": "/App/?source=pwa",
 	"id": "/App/?source=pwa",
-	"scope": "/App/",
+	"theme_color": "#000000",
+	"background_color": "#000000",
+	"display": "standalone",
+	"orientation": "any",
 	"icons": [
 		{
 			"src": "/App/src/img/x48.png",
@@ -54,9 +59,18 @@
 			"purpose": "maskable"
 		}
 	],
-	"theme_color": "#000000",
-	"background_color": "#000000",
-	"description": "App",
-	"display": "standalone",
-	"orientation": "portrait"
+	"shortcuts": [
+		{
+			"name": "App",
+			"short_name": "App",
+			"description": "App",
+			"url": "/?source=pwa",
+			"icons": [
+				{
+					"src": "/App/src/img/x192.png",
+					"sizes": "192x192"
+				}
+			]
+		}
+	]
 }
