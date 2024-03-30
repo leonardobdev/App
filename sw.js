@@ -4,9 +4,21 @@ var CACHE_NAME = APP_PREFIX + VERSION
 var URLS = [
   '/App/',
   '/App/index.html',
+  '/App/manifest.json',
   '/App/src/js/main.js',
   '/App/src/css/main.css',
   '/App/src/img/logo.svg',
+  '/App/src/img/logo.jpg',
+  '/App/src/img/favicon.jpg',
+  '/App/src/img/logo.jpg',
+  '/App/src/img/x48.png',
+  '/App/src/img/x72.png',
+  '/App/src/img/x96.png',
+  '/App/src/img/x128.png',
+  '/App/src/img/x192.png',
+  '/App/src/img/x384.png',
+  '/App/src/img/x512.png',
+  '/App/src/img/x1024.png',
 ]
 
 self.addEventListener('fetch', function (e) {
