@@ -1,33 +1,62 @@
+* {
+	margin: 0px;
+	padding: 0px;
+	border-collapse: collapse;
+	box-sizing: border-box;
+	background: transparent;
+	color: inherit;
+	font-family: 'Times New Roman', Times, serif;
+	font-size: 15px;
+	transition: 0.3s;
+	outline: 0px;
+}
+
+html,
+body {
+	width: 100vw;
+	height: 100vh;
+}
+
 .bg-black {
 	background: black;
 }
+
 .text-light {
 	color: white;
 }
+
 .text-center {
 	text-align: center;
 }
+
 .d-inline {
 	display: inline;
 }
+
 .d-inline-block {
 	display: inline-block;
 }
+
 .p-2 {
 	height: 40px;
 }
+
 .p-3 {
 	height: 60px;
 }
+
 .w-auto {
 	width: auto;
 }
+
 .align-middle {
 	align-items: middle;
 }
+
 .rounded-3 {
 	border-radius: 3px;
 }
+
 a:link {
 	color: cornflowerblue;
 }
