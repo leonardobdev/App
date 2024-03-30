@@ -28,7 +28,7 @@ self.addEventListener('install', (event) => {
   console.log('Service Worker: Instalando...');
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(urlsParaCachear);
+      return cache.addAll(WHITELIST);
     })
   );
 });
