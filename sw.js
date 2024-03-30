@@ -3,23 +3,23 @@ var APP_NAME = "App"
 var CACHE_VERSION = "0.1"
 var CACHE_NAME = `${APP_NAME}_v${CACHE_VERSION}`;
 var WHITELIST = [
-  "/App/",
-  "/App/index.html",
-  "/App/manifest.json",
-  "/App/src/js/main.js",
-  "/App/src/css/main.css",
-  "/App/src/img/logo.svg",
-  "/App/src/img/logo.jpg",
-  "/App/src/img/favicon.ico",
-  "/App/src/img/animated_favicon.gif",
-  "/App/src/img/x48.png",
-  "/App/src/img/x72.png",
-  "/App/src/img/x96.png",
-  "/App/src/img/x128.png",
-  "/App/src/img/x192.png",
-  "/App/src/img/x384.png",
-  "/App/src/img/x512.png",
-  "/App/src/img/x1024.png"
+  "/",
+  "index.html",
+  "manifest.json",
+  "src/js/main.js",
+  "src/css/main.css",
+  "src/img/logo.svg",
+  "src/img/logo.jpg",
+  "src/img/favicon.ico",
+  "src/img/animated_favicon.gif",
+  "src/img/x48.png",
+  "src/img/x72.png",
+  "src/img/x96.png",
+  "src/img/x128.png",
+  "src/img/x192.png",
+  "src/img/x384.png",
+  "src/img/x512.png",
+  "src/img/x1024.png"
 ]
 var BLACKLIST = [];
 
