@@ -57,14 +57,14 @@ const cacheFirst = async ({ request, preloadResponsePromise }) => {
     }
 };
 
-const enableNavigationPreload = async () => {
-    if (self.registration.navigationPreload) {
-        await self.registration.navigationPreload.enable();
-    }
-};
-
 self.onactivate = (event) => {
-    event.respondWith(enableNavigationPreload());
+    event.waitUntil(
+        async () => {
+            if (self.registration.navigationPreload) {
+                await self.registration.navigationPreload.enable();
+            }
+        }
+    );
 };
 
 self.oninstall = (event) => {
