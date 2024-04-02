@@ -22,37 +22,37 @@ var URLS = [
 
 URLS = URLS.map((v) => "/" + CACHE_NAME + v);
 
-const cs = {
-    open: (a) => {
-        return await caches.open(a);
-    },
-    save: (a, b) => {
-        return await cs.open(a).addAll(b);
-    },
-    load: (a) => {
-        return cs.open(a);
-    },
-    clear: (a) => {
-        caches.keys().then((b) => {
-            return Promise.all(
-                b.map((c) => {
-                    if (!a.includes(c)) return caches.delete(c);
-                }));
-        });
-    },
-    edit: () => { },
-    add: (a, b, c) => {
-        await cs.open(a).put(b, c);
-    },
-    sub: (a, b) => {
-        cs.clear(a);
-        cs.add(b);
-    },
-    find: (a) => {
-        return await caches.match(a);
-    },
-    combine: () => { }
-};
+// const cs = {
+//     open: (a) => {
+//         return await caches.open(a);
+//     },
+//     save: (a, b) => {
+//         return await cs.open(a).addAll(b);
+//     },
+//     load: (a) => {
+//         return cs.open(a);
+//     },
+//     clear: (a) => {
+//         caches.keys().then((b) => {
+//             return Promise.all(
+//                 b.map((c) => {
+//                     if (!a.includes(c)) return caches.delete(c);
+//                 }));
+//         });
+//     },
+//     edit: () => { },
+//     add: (a, b, c) => {
+//         await cs.open(a).put(b, c);
+//     },
+//     sub: (a, b) => {
+//         cs.clear(a);
+//         cs.add(b);
+//     },
+//     find: (a) => {
+//         return await caches.match(a);
+//     },
+//     combine: () => { }
+// };
 
 const addResourcesToCache = async (resources) => {
     const cache = await caches.open(CACHE_NAME);
