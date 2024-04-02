@@ -1,80 +1,83 @@
-var CACHE_ALL = false;
-var APP_NAME = "App";
-var CACHE_VERSION = "0.1";
-var CACHE_NAME = `${APP_NAME}_v${CACHE_VERSION}`;
-var WHITELIST = [
-  "/",
-  "/index.html",
-  "/manifest.json",
-  "/src/js/main.js",
-  "/src/css/main.css",
-  "/src/img/logo.svg",
-  "/src/img/logo.jpg",
-  "/src/img/favicon.ico",
-  "/src/img/animated_favicon.gif",
-  "/src/img/x48.png",
-  "/src/img/x72.png",
-  "/src/img/x96.png",
-  "/src/img/x128.png",
-  "/src/img/x192.png",
-  "/src/img/x384.png",
-  "/src/img/x512.png",
-  "/src/img/x1024.png",
+
+var CACHE_NAME = "App";
+var URLS = [
+    "/",
+    "/index.html",
+    "/manifest.json",
+    "/src/js/main.js",
+    "/src/css/main.css",
+    "/src/img/logo.svg",
+    "/src/img/logo.jpg",
+    "/src/img/favicon.ico",
+    "/src/img/animated_favicon.gif",
+    "/src/img/x48.png",
+    "/src/img/x72.png",
+    "/src/img/x96.png",
+    "/src/img/x128.png",
+    "/src/img/x192.png",
+    "/src/img/x384.png",
+    "/src/img/x512.png",
+    "/src/img/x1024.png",
 ];
-var BLACKLIST = [];
-[WHITELIST, BLACKLIST] = [WHITELIST, BLACKLIST].map((l) => l.map((v) => "/" + APP_NAME + v));
 
-self.addEventListener('fetch', async (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      if (response) {
-        console.log("[SW] responding with cache: " + event.request.url);
-        return response;
-      } else if (!CACHE_ALL || BLACKLIST.indexOf(event.request) !== -1) {
-        console.log("[SW] fetching: " + event.request.url);
-        return fetch(event.request);
-      } else {
-        fetch(event.request).then((response) => {
-          if (!response || response.status !== 200 || response.type !== 'basic') {
-            console.log("[SW] fetching: " + event.request.url);
-            return response;
-          }
-          var responseToCache = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            console.log("[SW] caching: " + event.request.url);
-            cache.put(event.request, responseToCache);
-          }
-          );
-          console.log("[SW] responding with cache: " + event.request.url);
-          return response;
+URLS = URLS.map((v) => "/" + CACHE_NAME + v);
+
+const addResourcesToCache = async (resources) => {
+    const cache = await caches.open(CACHE_NAME);
+    await cache.addAll(resources);
+};
+
+const putInCache = async (request, response) => {
+    const cache = await caches.open(CACHE_NAME);
+    await cache.put(request, response);
+};
+
+const cacheFirst = async ({ request, preloadResponsePromise }) => {
+    const responseFromCache = await caches.match(request);
+    if (responseFromCache) {
+        return responseFromCache;
+    }
+
+    const preloadResponse = await preloadResponsePromise;
+    if (preloadResponse) {
+        console.info('using preload response', preloadResponse);
+        putInCache(request, preloadResponse.clone());
+        return preloadResponse;
+    }
+
+    try {
+        const responseFromNetwork = await fetch(request.clone());
+        putInCache(request, responseFromNetwork.clone());
+        return responseFromNetwork;
+    } catch (error) {
+        return new Response('Network error happened', {
+            status: 408,
+            headers: { 'Content-Type': 'text/plain' },
         });
-      }
-    }));
-});
+    }
+};
 
-self.addEventListener('install', async (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      console.log("[sw] install event");
-      return cache.addAll(WHITELIST);
-    }));
-});
+const enableNavigationPreload = async () => {
+    if (self.registration.navigationPreload) {
+        await self.registration.navigationPreload.enable();
+    }
+};
 
-self.addEventListener('activate', async (e) => {
-  e.waitUntil(
-    caches.keys().then(async (keyList) => {
+self.onactivate = (event) => {
+    event.waitUntil(enableNavigationPreload());
+};
 
-      var cacheWhitelist = keyList.filter(async (key) => {
-        return key.indexOf(APP_PREFIX);
-      })
+self.oninstall = (event) => {
+    event.waitUntil(
+        addResourcesToCache(URLS)
+    );
+};
 
-      cacheWhitelist.push(CACHE_NAME)
-
-      return Promise.all(keyList.map(async (key, i) => {
-        if (cacheWhitelist.indexOf(key) === -1) {
-          console.log('[sw] deleting cache : ' + keyList[i]);
-          return caches.delete(keyList[i]);
-        }
-      }));
-    }))
-});
+self.onfetch = (event) => {
+    event.respondWith(
+        cacheFirst({
+            request: event.request,
+            preloadResponsePromise: event.preloadResponse,
+        })
+    );
+};
