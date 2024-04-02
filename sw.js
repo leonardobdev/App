@@ -64,7 +64,7 @@ const enableNavigationPreload = async () => {
 };
 
 self.onactivate = (event) => {
-    event.waitUntil(enableNavigationPreload());
+    event.respondWith(enableNavigationPreload());
 };
 
 self.oninstall = (event) => {
