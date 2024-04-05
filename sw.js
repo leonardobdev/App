@@ -36,17 +36,17 @@ self.oninstall = async event => event.waitUntil(
     })
 );
 
-self.onactivate = async event => event.waitUntil(
-    caches.keys().then(function (keyList) {
-        var cacheWhitelist = keyList.filter(function (key) {
-            return key.indexOf(CACHE_NAME)
-        });
-        cacheWhitelist.push(CACHE_NAME);
-        return Promise.all(keyList.map(function (key, i) {
-            if (URLS.indexOf(key) === -1) {
-                console.log('[sw] deleting cache: ' + keyList[i]);
-                return caches.delete(keyList[i])
-            }
-        }));
-    })
-);
+// self.onactivate = async event => event.waitUntil(
+//     caches.keys().then(function (keyList) {
+//         var cacheWhitelist = keyList.filter(function (key) {
+//             return key.indexOf(CACHE_NAME)
+//         });
+//         cacheWhitelist.push(CACHE_NAME);
+//         return Promise.all(keyList.map(function (key, i) {
+//             if (URLS.indexOf(key) === -1) {
+//                 console.log('[sw] deleting cache: ' + keyList[i]);
+//                 return caches.delete(keyList[i])
+//             }
+//         }));
+//     })
+// );
