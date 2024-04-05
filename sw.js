@@ -22,30 +22,31 @@ var URLS = [
 
 URLS = URLS.map((v) => "/" + CACHE_NAME + v);
 
-// self.onactivate = async (event) => {
-//     event.waitUntil(
-//     );
-// };
+self.onfetch = async event => event.respondWith(
+    caches.match(e.request).then(function (request) {
+        console.log('[sw] fetching cache: ' + event.request.url);
+        return request || fetch(e.request);
+    })
+);
 
-self.oninstall = async (event) => {
-    event.waitUntil(async () => {
-        const caches = await caches.open(CACHE_NAME);
-        await caches.addAll(URLS);
-    }
-    );
-};
+self.oninstall = async event => event.waitUntil(
+    caches.open(CACHE_NAME).then(function (cache) {
+        console.log('[sw] installing cache: ' + CACHE_NAME);
+        return cache.addAll(URLS);
+    })
+);
 
-self.onfetch = async (event) => {
-    event.respondWith(async () => {
-        const responseFromCache = await caches.match(e.request);
-        if (responseFromCache) {
-            return responseFromCache;
-        } else {
-            const responseFromNetwork = await fetch(request.clone());
-            const cache = await caches.open(CACHE_NAME);
-            await cache.put(request, responseFromNetwork.clone());
-            return responseFromNetwork;
-        }
-    }
-    );
-};
+self.onactivate = async event => event.waitUntil(
+    caches.keys().then(function (keyList) {
+        var cacheWhitelist = keyList.filter(function (key) {
+            return key.indexOf(CACHE_NAME)
+        });
+        cacheWhitelist.push(CACHE_NAME);
+        return Promise.all(keyList.map(function (key, i) {
+            if (URLS.indexOf(key) === -1) {
+                console.log('[sw] deleting cache: ' + keyList[i]);
+                return caches.delete(keyList[i])
+            }
+        }));
+    })
+);
