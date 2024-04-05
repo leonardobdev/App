@@ -23,7 +23,7 @@ var URLS = [
 URLS = URLS.map((v) => "/" + CACHE_NAME + v);
 
 self.onfetch = async event => event.respondWith(
-    caches.match(e.request).then(function (request) {
+    caches.match(event.request).then(function (request) {
         console.log('[sw] fetching cache: ' + event.request.url);
         return request || fetch(e.request);
     })
