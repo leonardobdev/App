@@ -22,93 +22,28 @@ var URLS = [
 
 URLS = URLS.map((v) => "/" + CACHE_NAME + v);
 
-// const cs = {
-//     open: (a) => {
-//         return await caches.open(a);
-//     },
-//     save: (a, b) => {
-//         return await cs.open(a).addAll(b);
-//     },
-//     load: (a) => {
-//         return cs.open(a);
-//     },
-//     clear: (a) => {
-//         caches.keys().then((b) => {
-//             return Promise.all(
-//                 b.map((c) => {
-//                     if (!a.includes(c)) return caches.delete(c);
-//                 }));
-//         });
-//     },
-//     edit: () => { },
-//     add: (a, b, c) => {
-//         await cs.open(a).put(b, c);
-//     },
-//     sub: (a, b) => {
-//         cs.clear(a);
-//         cs.add(b);
-//     },
-//     find: (a) => {
-//         return await caches.match(a);
-//     },
-//     combine: () => { }
+// self.onactivate = async (event) => {
+//     event.waitUntil(
+//     );
 // };
 
-const addResourcesToCache = async (resources) => {
-    const cache = await caches.open(CACHE_NAME);
-    await cache.addAll(resources);
-};
-
-const putInCache = async (request, response) => {
-    const cache = await caches.open(CACHE_NAME);
-    await cache.put(request, response);
-};
-
-const cacheFirst = async ({ request, preloadResponsePromise }) => {
-    const responseFromCache = await caches.match(request);
-    if (responseFromCache) {
-        return responseFromCache;
-    }
-
-    const preloadResponse = await preloadResponsePromise;
-    if (preloadResponse) {
-        putInCache(request, preloadResponse.clone());
-        return preloadResponse;
-    }
-
-    try {
-        const responseFromNetwork = await fetch(request.clone());
-        putInCache(request, responseFromNetwork.clone());
-        return responseFromNetwork;
-    } catch (error) {
-        return new Response('Network error happened', {
-            status: 408,
-            headers: { 'Content-Type': 'text/plain' },
-        });
-    }
-};
-
-self.onactivate = (event) => {
+self.oninstall = async (event) => {
     event.waitUntil(
-        async () => {
-            if (self.registration.navigationPreload) {
-                await self.registration.navigationPreload.enable();
-            }
+        await caches.open(CACHE_NAME).addAll(URLS)
+    );
+};
+
+self.onfetch = async (event) => {
+    event.respondWith(async () => {
+        const responseFromCache = await caches.match(e.request);
+        if (responseFromCache) {
+            return responseFromCache;
+        } else {
+            const responseFromNetwork = await fetch(request.clone());
+            const cache = await caches.open(CACHE_NAME);
+            await cache.put(request, responseFromNetwork.clone());
+            return responseFromNetwork;
         }
-    );
-};
-
-self.oninstall = (event) => {
-    event.waitUntil(
-        addResourcesToCache(URLS)
-    );
-};
-
-self.onfetch = (event) => {
-    event.respondWith(
-        cacheFirst({
-            request: event.request,
-            preloadResponsePromise: event.preloadResponse,
-        })
+    }
     );
 };
