@@ -28,8 +28,10 @@ URLS = URLS.map((v) => "/" + CACHE_NAME + v);
 // };
 
 self.oninstall = async (event) => {
-    event.waitUntil(
-        await caches.open(CACHE_NAME).addAll(URLS)
+    event.waitUntil(async () => {
+        const caches = await caches.open(CACHE_NAME);
+        await caches.addAll(URLS);
+    }
     );
 };
 
