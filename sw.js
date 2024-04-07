@@ -95,7 +95,7 @@ self.onfetch = async event => {
 
                         let updatedResponse = await fetch(request);
 
-                        if (updatedResponse.status === 200) {
+                        if (updatedResponse.status !== 200) {
 
                             log && console.log('[sw] deleting from cache: ' + request.url);
                             await cache.delete(request);
