@@ -1,32 +1,34 @@
 
-var CACHE_NAME = "App";
+var log = true;
+var CACHE_NAME = 'App';
 var URLS = [
-    "/",
-    "/index.html",
-    "/manifest.json",
-    "/sw.js",
-    "/src/js/main.js",
-    "/src/css/main.css",
-    "/src/img/animated_favicon1.gif",
-    "/src/img/favicon.ico",
-    "/src/img/logo.jpg",
-    "/src/img/logo.svg",
-    "/src/img/x48.png",
-    "/src/img/x72.png",
-    "/src/img/x96.png",
-    "/src/img/x128.png",
-    "/src/img/x192.png",
-    "/src/img/x384.png",
-    "/src/img/x512.png",
-    "/src/img/x1024.png",
+    '/',
+    '/index.html',
+    '/manifest.json',
+    '/sw.js',
+    '/src/js/main.js',
+    '/src/css/main.css',
+    '/src/img/animated_favicon1.gif',
+    '/src/img/favicon.ico',
+    '/src/img/logo.jpg',
+    '/src/img/logo.svg',
+    '/src/img/x48.png',
+    '/src/img/x72.png',
+    '/src/img/x96.png',
+    '/src/img/x128.png',
+    '/src/img/x192.png',
+    '/src/img/x384.png',
+    '/src/img/x512.png',
+    '/src/img/x1024.png',
 ];
 
-URLS = URLS.map((v) => "/" + CACHE_NAME + v);
+URLS = URLS.map((v) => '/' + CACHE_NAME + v);
 
 self.oninstall = async event => {
     self.skipWaiting();
     event.waitUntil(async () => {
 
+        log && console.log('[sw] installing cache: ' + CACHE_NAME);
         let cache = await caches.open(CACHE_NAME);
 
         await cache.addAll(URLS);
@@ -54,14 +56,19 @@ self.onfetch = async event => {
 
                     if (cachedEtag === updatedEtag) {
 
+                        log && console.log('[sw] fetching from cache: ' + request.url);
                         response = cachedResponse
 
                     } else {
 
+                        log && console.log('[sw] fetching from network: ' + request.url);
                         response = updatedResponse;
+
+                        log && console.log('[sw] deleting from cache: ' + request.url);
 
                         await cache.delete(request);
 
+                        log && console.log('[sw] adding on cache: ' + request.url);
                         await cache.add(request, updatedResponse);
 
                     }
@@ -70,6 +77,7 @@ self.onfetch = async event => {
 
             } else {
 
+                log && console.log('[sw] fetching from network: ' + request.url);
                 response = updatedResponse;
 
             }
