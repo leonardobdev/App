@@ -37,7 +37,7 @@ URLS = URLS.map((v) => "/" + CACHE_NAME + v);
 
 self.onfetch = async event => {
     event.respondWith(
-        caches.open(CACHE_NAME).then((cache) => {
+        caches.open(CACHE_NAME).then(async (cache) => {
 
             let request = event.request;
             let cachedResponse = await cache.match(request);
