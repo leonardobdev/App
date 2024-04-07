@@ -36,7 +36,7 @@ self.oninstall = async event => {
 URLS = URLS.map((v) => "/" + CACHE_NAME + v);
 
 self.onfetch = async event => {
-    event.respondWith(async () => {
+    event.respondWith(() => {
 
         let request = event.request;
         let cachedResponse = await caches.match(request);
