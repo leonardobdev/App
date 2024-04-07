@@ -22,48 +22,63 @@ var URLS = [
 
 self.oninstall = async event => {
     event.waitUntil(async () => {
-        console.log('[sw] installing cache: ' + CACHE_NAME);
+
         let cache = await caches.open(CACHE_NAME);
-        let response = await cache.addAll(URLS);
-        return response;
+
+        console.log('[sw] installing cache: ' + CACHE_NAME);
+        await cache.addAll(URLS);
+
+        return;
+
     });
 };
 
 URLS = URLS.map((v) => "/" + CACHE_NAME + v);
 
 self.onfetch = async event => {
-    let request = event.request;
-    let cachedResponse = await caches.match(request);
-    let updatedResponse = await fetch(request);
-    let response = '';
+    event.respondWith(async () => {
 
-    if (cachedResponse) {
+        let request = event.request;
+        let cachedResponse = await caches.match(request);
+        let updatedResponse = await fetch(request);
+        let response = '';
 
-        if (updatedResponse.status === 200) {
+        if (cachedResponse) {
 
-            let cachedEtag = cachedResponse.headers.get('etag');
-            let updatedEtag = updatedResponse.headers.get('etag');
+            if (updatedResponse.status === 200) {
 
-            if (cachedEtag === updatedEtag) {
+                let cachedEtag = cachedResponse.headers.get('etag');
+                let updatedEtag = updatedResponse.headers.get('etag');
 
-                response = cachedResponse
+                if (cachedEtag === updatedEtag) {
 
-            } else {
+                    console.log('[sw] fetching from cache: ' + request.url);
+                    response = cachedResponse
 
-                response = updatedResponse;
-                await caches.delete(request);
-                await caches.add(request, updatedResponse);
+                } else {
+
+                    console.log('[sw] fetching from network: ' + request.url);
+                    response = updatedResponse;
+
+                    let cache = await caches.open(CACHE_NAME);
+
+                    console.log('[sw] deleting from cache: ' + request.url);
+                    await cache.delete(request);
+
+                    console.log('[sw] adding on cache: ' + request.url);
+                    await cache.add(request, updatedResponse);
+
+                }
 
             }
 
+        } else {
+
+            response = updatedResponse;
+
         }
 
-    } else {
+        return response;
 
-        response = updatedResponse;
-
-    }
-
-    event.respondWith(response);
-    return;
+    });
 };
