@@ -49,11 +49,11 @@ self.onfetch = async event => {
                                 log && console.log('[sw] fetching from cache: ' + request.url);
                                 response = cachedResponse
                             } else {
-                                log && console.log('[sw] deleting from cache: ' + request.url);
+                                log && console.log('[sw] deleting from cache: ' + request.url
+                                    + '[sw] adding on cache: ' + request.url
+                                    + '[sw] fetching from network: ' + request.url);
                                 await cache.delete(request);
-                                log && console.log('[sw] adding on cache: ' + request.url);
                                 await cache.add(request, updatedResponse);
-                                log && console.log('[sw] fetching from network: ' + request.url);
                                 response = updatedResponse;
                             }
                         } else {
