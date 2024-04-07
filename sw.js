@@ -21,11 +21,12 @@ var URLS = [
 ];
 
 self.oninstall = async event => {
-    console.log('[sw] installing cache: ' + CACHE_NAME);
-    let cache = await caches.open(CACHE_NAME);
-    let response = await cache.addAll(URLS);
-    event.waitUntil(response);
-    return;
+    event.waitUntil(async () => {
+        console.log('[sw] installing cache: ' + CACHE_NAME);
+        let cache = await caches.open(CACHE_NAME);
+        let response = await cache.addAll(URLS);
+        return response;
+    });
 };
 
 URLS = URLS.map((v) => "/" + CACHE_NAME + v);
@@ -35,7 +36,7 @@ self.onfetch = async event => {
     let cachedResponse = await caches.match(request);
     let updatedResponse = await fetch(request);
     let response = '';
-    
+
     if (cachedResponse) {
 
         if (updatedResponse.status === 200) {
@@ -58,7 +59,7 @@ self.onfetch = async event => {
         }
 
     } else {
-        
+
         response = updatedResponse;
 
     }
