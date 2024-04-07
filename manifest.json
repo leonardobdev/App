@@ -3,8 +3,8 @@
 	"short_name": "App",
 	"description": "App",
 	"scope": "/App/",
-	"start_url": "/App/?source=pwa",
-	"id": "/App/?source=pwa",
+	"start_url": "/App/",
+	"id": "/App/",
 	"theme_color": "#000000",
 	"background_color": "#000000",
 	"display": "standalone",
@@ -64,7 +64,7 @@
 			"name": "App",
 			"short_name": "App",
 			"description": "App",
-			"url": "/App/?source=pwa",
+			"url": "/App/",
 			"icons": [
 				{
 					"src": "/App/src/img/x192.png",
