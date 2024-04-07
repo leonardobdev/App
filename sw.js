@@ -53,8 +53,6 @@ self.onfetch = async event => {
                         let cachedEtag = cachedResponse.headers.get('etag');
                         let updatedEtag = updatedResponse.headers.get('etag');
 
-                        console.log(cachedEtag);
-                        console.log(updatedEtag);
                         if (cachedEtag === updatedEtag) {
 
                             log && console.log('[sw] fetching from cache: ' + request.url);
