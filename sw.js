@@ -43,7 +43,6 @@ self.onfetch = async event => {
             async (cache) => {
 
                 let request = event.request;
-                let updatedResponse = await fetch(request);
                 let cachedResponse = await cache.match(request);
                 let response = updatedResponse;
 
@@ -51,6 +50,7 @@ self.onfetch = async event => {
 
                     if (navigator.onLine) {
 
+                        let updatedResponse = await fetch(request);
 
                         if (updatedResponse.status === 200) {
 
@@ -93,12 +93,17 @@ self.onfetch = async event => {
 
                     if (navigator.onLine) {
 
+                        let updatedResponse = await fetch(request);
+
                         if (updatedResponse.status !== 200) {
 
                             log && console.log('[sw] deleting from cache: ' + request.url);
                             await cache.delete(request);
 
                         }
+
+                        log && console.log('[sw] fetching from network: ' + request.url);
+                        response = updatedResponse;
 
                     }
 
