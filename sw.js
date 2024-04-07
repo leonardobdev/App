@@ -43,9 +43,9 @@ self.oninstall = async event => {
 self.onfetch = async event => {
     event.respondWith(
         caches.open(CACHE_NAME).then(
-            async (cachedResponse) => {
+            async (cache) => {
                 cache.match(
-                    async (cache) => {
+                    async (cachedResponse) => {
 
                         let request = event.request;
                         let updatedResponse = await fetch(request);
