@@ -91,16 +91,18 @@ self.onfetch = async event => {
 
                 } else {
 
+                    if (navigator.onLine) {
 
-                    if (updatedResponse.status !== 200 && navigator.onLine) {
+                        let updatedResponse = await fetch(request);
 
-                        log && console.log('[sw] deleting from cache: ' + request.url);
-                        await cache.delete(request);
+                        if (updatedResponse.status === 200) {
+
+                            log && console.log('[sw] deleting from cache: ' + request.url);
+                            await cache.delete(request);
+
+                        }
 
                     }
-
-                    log && console.log('[sw] fetching from network: ' + request.url);
-                    response = updatedResponse;
 
                 }
 
