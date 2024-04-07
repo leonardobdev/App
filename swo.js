@@ -11,7 +11,7 @@ var WHITELIST = [
   "/src/img/logo.svg",
   "/src/img/logo.jpg",
   "/src/img/favicon.ico",
-  "/src/img/animated_favicon.gif",
+  "/src/img/animated_favicon1.gif",
   "/src/img/x48.png",
   "/src/img/x72.png",
   "/src/img/x96.png",
