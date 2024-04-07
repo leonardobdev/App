@@ -25,13 +25,14 @@ var URLS = [
 URLS = URLS.map((v) => '/' + CACHE_NAME + v);
 
 self.oninstall = async () => {
-    self.skipWaiting();
 
+    self.skipWaiting();
+    
     log && console.log('[sw] installing cache: ' + CACHE_NAME);
     let cache = await caches.open(CACHE_NAME);
-
+    
     await cache.addAll(URLS);
-
+    
     return;
 
 };
