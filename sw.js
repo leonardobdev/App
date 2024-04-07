@@ -36,49 +36,49 @@ self.oninstall = async event => {
 URLS = URLS.map((v) => "/" + CACHE_NAME + v);
 
 self.onfetch = async event => {
-    event.respondWith(() => {
+    event.respondWith(
+        caches.open(CACHE_NAME).then((cache) => {
 
-        let request = event.request;
-        let cachedResponse = await caches.match(request);
-        let updatedResponse = await fetch(request);
-        let response = '';
+            let request = event.request;
+            let cachedResponse = await cache.match(request);
+            let updatedResponse = await fetch(request);
+            let response = '';
 
-        if (cachedResponse) {
+            if (cachedResponse) {
 
-            if (updatedResponse.status === 200) {
+                if (updatedResponse.status === 200) {
 
-                let cachedEtag = cachedResponse.headers.get('etag');
-                let updatedEtag = updatedResponse.headers.get('etag');
+                    let cachedEtag = cachedResponse.headers.get('etag');
+                    let updatedEtag = updatedResponse.headers.get('etag');
 
-                if (cachedEtag === updatedEtag) {
+                    if (cachedEtag === updatedEtag) {
 
-                    console.log('[sw] fetching from cache: ' + request.url);
-                    response = cachedResponse
+                        console.log('[sw] fetching from cache: ' + request.url);
+                        response = cachedResponse
 
-                } else {
+                    } else {
 
-                    console.log('[sw] fetching from network: ' + request.url);
-                    response = updatedResponse;
+                        console.log('[sw] fetching from network: ' + request.url);
+                        response = updatedResponse;
 
-                    let cache = await caches.open(CACHE_NAME);
+                        console.log('[sw] deleting from cache: ' + request.url);
+                        await cache.delete(request);
 
-                    console.log('[sw] deleting from cache: ' + request.url);
-                    await cache.delete(request);
+                        console.log('[sw] adding on cache: ' + request.url);
+                        await cache.add(request, updatedResponse);
 
-                    console.log('[sw] adding on cache: ' + request.url);
-                    await cache.add(request, updatedResponse);
+                    }
 
                 }
 
+            } else {
+
+                response = updatedResponse;
+
             }
 
-        } else {
+            return response;
 
-            response = updatedResponse;
-
-        }
-
-        return response;
-
-    });
+        })
+    );
 };
