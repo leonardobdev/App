@@ -74,8 +74,8 @@
 			"icons": [
 				{
 					"src": "/App/src/img/logo.svg",
-					"type": "image/svg+xml",
-					"sizes": "512x512"
+					"sizes": "512x512",
+					"type": "image/svg+xml"
 				}
 			]
 		}
