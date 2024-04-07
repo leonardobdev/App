@@ -6,10 +6,10 @@ var URLS = [
     "/manifest.json",
     "/src/js/main.js",
     "/src/css/main.css",
-    "/src/img/logo.svg",
-    "/src/img/logo.jpg",
-    "/src/img/favicon.ico",
     "/src/img/animated_favicon1.gif",
+    "/src/img/favicon.ico",
+    "/src/img/logo.jpg",
+    "/src/img/logo.svg",
     "/src/img/x48.png",
     "/src/img/x72.png",
     "/src/img/x96.png",
@@ -20,9 +20,16 @@ var URLS = [
     "/src/img/x1024.png",
 ];
 
+self.oninstall = e => e.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+        console.log('[sw] installing cache: ' + CACHE_NAME);
+        return cache.addAll(URLS);
+    })
+);
+
 URLS = URLS.map((v) => "/" + CACHE_NAME + v);
 
-self.onfetch = async e => e.respondWith(
+self.onfetch = e => e.respondWith(
     caches.match(e.request).then((request) => {
         if (request) {
             console.log('[sw] fetching from cache: ' + e.request.url);
@@ -31,12 +38,5 @@ self.onfetch = async e => e.respondWith(
             console.log('[sw] fetching from network: ' + e.request.url);
             return fetch(e.request);
         }
-    })
-);
-
-self.oninstall = async e => e.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-        console.log('[sw] installing cache: ' + CACHE_NAME);
-        return cache.addAll(URLS);
     })
 );
