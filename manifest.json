@@ -61,7 +61,7 @@
 		{
 			"src": "/App/src/img/logo.svg",
 			"sizes": "512x512",
-			"type": "image/svg",
+			"type": "image/svg+xml",
 			"purpose": "maskable"
 		}
 	],
@@ -74,6 +74,7 @@
 			"icons": [
 				{
 					"src": "/App/src/img/logo.svg",
+					"type": "image/svg+xml",
 					"sizes": "512x512"
 				}
 			]
