@@ -34,10 +34,9 @@ self.oninstall = async () => {
 
 self.onfetch = async event => {
     event.respondWith(
-        caches.open(CACHE_NAME).then(
-            async (cache) => {
+        caches.open(CACHE_NAME).then(async cache => {
+            cache.match(async cachedResponse => {
                 let request = event.request;
-                let cachedResponse = await cache.match(request);
                 let response = '';
                 if (cachedResponse) {
                     if (navigator.onLine) {
@@ -77,5 +76,6 @@ self.onfetch = async event => {
                 }
                 return response;
             })
+        })
     );
 };
