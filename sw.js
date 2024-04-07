@@ -44,7 +44,7 @@ self.onfetch = async event => {
 
                 let request = event.request;
                 let cachedResponse = await cache.match(request);
-                let response = updatedResponse;
+                let response = '';
 
                 if (cachedResponse) {
 
