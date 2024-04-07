@@ -25,7 +25,6 @@ self.oninstall = async event => {
 
         let cache = await caches.open(CACHE_NAME);
 
-        console.log('[sw] installing cache: ' + CACHE_NAME);
         await cache.addAll(URLS);
 
         return;
@@ -53,18 +52,14 @@ self.onfetch = async event => {
 
                     if (cachedEtag === updatedEtag) {
 
-                        console.log('[sw] fetching from cache: ' + request.url);
                         response = cachedResponse
 
                     } else {
 
-                        console.log('[sw] fetching from network: ' + request.url);
                         response = updatedResponse;
 
-                        console.log('[sw] deleting from cache: ' + request.url);
                         await cache.delete(request);
 
-                        console.log('[sw] adding on cache: ' + request.url);
                         await cache.add(request, updatedResponse);
 
                     }
