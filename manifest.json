@@ -56,12 +56,6 @@
 			"src": "/App/src/img/x1024.png",
 			"sizes": "1024x1024",
 			"type": "image/png",
-			"purpose": "any"
-		},
-		{
-			"src": "/App/src/img/logo.svg",
-			"sizes": "512x512",
-			"type": "image/svg+xml",
 			"purpose": "maskable"
 		}
 	],
@@ -73,9 +67,9 @@
 			"url": "/App/",
 			"icons": [
 				{
-					"src": "/App/src/img/logo.svg",
-					"sizes": "512x512",
-					"type": "image/svg+xml"
+					"src": "/App/src/img/x192.png",
+					"sizes": "192x192",
+					"type": "image/pngl"
 				}
 			]
 		}
