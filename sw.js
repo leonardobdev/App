@@ -4,6 +4,7 @@ var URLS = [
     "/",
     "/index.html",
     "/manifest.json",
+    "/sw.js",
     "/src/js/main.js",
     "/src/css/main.css",
     "/src/img/animated_favicon1.gif",
