@@ -1,5 +1,5 @@
 
-var log = true;
+var log = false;
 var CACHE_NAME = 'App';
 var URLS = [
     '/',

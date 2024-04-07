@@ -1,4 +1,4 @@
-var log = true;
+var log = false;
 var isOnline = true;
 var isWebAPK = window.matchMedia('(display-mode: standalone)').matches;
 log && console.log('[*] The app is running as a ' + (isWebAPK ? 'WebAPK' : 'Browser-Page'));
