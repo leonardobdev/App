@@ -24,8 +24,13 @@ URLS = URLS.map((v) => "/" + CACHE_NAME + v);
 
 self.onfetch = async e => e.respondWith(
     caches.match(e.request).then((request) => {
-        console.log('[sw] fetching cache: ' + e.request.url);
-        return request || fetch(e.request);
+        if (request) {
+            console.log('[sw] fetching from cache: ' + e.request.url);
+            return request;
+        } else {
+            console.log('[sw] fetching from network: ' + e.request.url);
+            return fetch(e.request);
+        }
     })
 );
 
