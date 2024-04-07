@@ -26,18 +26,14 @@ URLS = URLS.map((v) => '/' + CACHE_NAME + v);
 
 self.oninstall = async event => {
     self.skipWaiting();
-    event.waitUntil(
-        async () => {
-            
-        log && console.log('[sw] installing cache: ' + CACHE_NAME);
-        let cache = await caches.open(CACHE_NAME);
 
-        await cache.addAll(URLS);
+            log && console.log('[sw] installing cache: ' + CACHE_NAME);
+            let cache = await caches.open(CACHE_NAME);
 
-        return;
+            await cache.addAll(URLS);
 
-    }
-);
+            return;
+
 };
 
 self.onfetch = async event => {
@@ -45,50 +41,50 @@ self.onfetch = async event => {
         caches.open(CACHE_NAME).then(
             async (cache) => {
 
-            let request = event.request;
-            let cachedResponse = await cache.match(request);
-            let updatedResponse = await fetch(request);
-            let response = '';
+                let request = event.request;
+                let cachedResponse = await cache.match(request);
+                let updatedResponse = await fetch(request);
+                let response = '';
 
-            if (cachedResponse) {
+                if (cachedResponse) {
 
-                if (updatedResponse.status === 200) {
+                    if (updatedResponse.status === 200) {
 
-                    let cachedEtag = cachedResponse.headers.get('etag');
-                    let updatedEtag = updatedResponse.headers.get('etag');
+                        let cachedEtag = cachedResponse.headers.get('etag');
+                        let updatedEtag = updatedResponse.headers.get('etag');
 
-                    console.log(cachedEtag);
-                    console.log(updatedEtag);
-                    if (cachedEtag === updatedEtag) {
+                        console.log(cachedEtag);
+                        console.log(updatedEtag);
+                        if (cachedEtag === updatedEtag) {
 
-                        log && console.log('[sw] fetching from cache: ' + request.url);
-                        response = cachedResponse
+                            log && console.log('[sw] fetching from cache: ' + request.url);
+                            response = cachedResponse
 
-                    } else {
+                        } else {
 
-                        log && console.log('[sw] fetching from network: ' + request.url);
-                        response = updatedResponse;
+                            log && console.log('[sw] fetching from network: ' + request.url);
+                            response = updatedResponse;
 
-                        log && console.log('[sw] deleting from cache: ' + request.url);
+                            log && console.log('[sw] deleting from cache: ' + request.url);
 
-                        await cache.delete(request);
+                            await cache.delete(request);
 
-                        log && console.log('[sw] adding on cache: ' + request.url);
-                        await cache.add(request, updatedResponse);
+                            log && console.log('[sw] adding on cache: ' + request.url);
+                            await cache.add(request, updatedResponse);
+
+                        }
 
                     }
 
+                } else {
+
+                    log && console.log('[sw] fetching from network: ' + request.url);
+                    response = updatedResponse;
+
                 }
 
-            } else {
+                return response;
 
-                log && console.log('[sw] fetching from network: ' + request.url);
-                response = updatedResponse;
-
-            }
-
-            return response;
-
-        })
+            })
     );
 };
