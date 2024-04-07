@@ -25,92 +25,57 @@ var URLS = [
 URLS = URLS.map((v) => '/' + CACHE_NAME + v);
 
 self.oninstall = async () => {
-
     self.skipWaiting();
-
     log && console.log('[sw] installing cache: ' + CACHE_NAME);
     let cache = await caches.open(CACHE_NAME);
-
     await cache.addAll(URLS);
-
     return;
-
 };
 
 self.onfetch = async event => {
     event.respondWith(
         caches.open(CACHE_NAME).then(
             async (cache) => {
-
                 let request = event.request;
                 let cachedResponse = await cache.match(request);
                 let response = '';
-
                 if (cachedResponse) {
-
                     if (navigator.onLine) {
-
                         let updatedResponse = await fetch(request);
-
                         if (updatedResponse.status === 200) {
-
                             let cachedEtag = cachedResponse.headers.get('etag');
                             let updatedEtag = updatedResponse.headers.get('etag');
-
                             if (cachedEtag === updatedEtag) {
-
                                 log && console.log('[sw] fetching from cache: ' + request.url);
                                 response = cachedResponse
-
                             } else {
-
                                 log && console.log('[sw] deleting from cache: ' + request.url);
                                 await cache.delete(request);
-
                                 log && console.log('[sw] adding on cache: ' + request.url);
                                 await cache.add(request, updatedResponse);
-
                                 log && console.log('[sw] fetching from network: ' + request.url);
                                 response = updatedResponse;
-
                             }
-
                         } else {
-
                             log && console.log('[sw] deleting from cache: ' + request.url);
                             await cache.delete(request);
-
                         }
-
                     } else {
-
                         log && console.log('[sw] fetching from cache: ' + request.url);
                         response = cachedResponse
-
                     }
-
                 } else {
-
                     if (navigator.onLine) {
-
                         let updatedResponse = await fetch(request);
-
                         if (updatedResponse.status !== 200) {
-
                             log && console.log('[sw] deleting from cache: ' + request.url);
                             await cache.delete(request);
-
                         }
-
                         log && console.log('[sw] fetching from network: ' + request.url);
                         response = updatedResponse;
-
                     }
-
                 }
-
                 return response;
-
             })
     );
 };
