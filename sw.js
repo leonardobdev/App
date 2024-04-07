@@ -21,6 +21,7 @@ var URLS = [
 ];
 
 self.oninstall = async event => {
+    self.skipWaiting();
     event.waitUntil(async () => {
 
         let cache = await caches.open(CACHE_NAME);
