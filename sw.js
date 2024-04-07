@@ -20,11 +20,11 @@ var URLS = [
     "/src/img/x1024.png",
 ];
 
-self.oninstall = async () => {
+self.oninstall = async event => {
     console.log('[sw] installing cache: ' + CACHE_NAME);
     let cache = await caches.open(CACHE_NAME);
     let response = await cache.addAll(URLS);
-    e.waitUntil(response);
+    event.waitUntil(response);
     return;
 };
 
@@ -60,7 +60,7 @@ self.onfetch = async event => {
     } else {
         
         response = updatedResponse;
-        
+
     }
 
     event.respondWith(response);
