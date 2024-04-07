@@ -20,6 +20,8 @@ var URLS = [
     "/src/img/x1024.png",
 ];
 
+URLS = URLS.map((v) => "/" + CACHE_NAME + v);
+
 self.oninstall = async event => {
     self.skipWaiting();
     event.waitUntil(async () => {
@@ -32,8 +34,6 @@ self.oninstall = async event => {
 
     });
 };
-
-URLS = URLS.map((v) => "/" + CACHE_NAME + v);
 
 self.onfetch = async event => {
     event.respondWith(
