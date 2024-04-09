@@ -24,6 +24,8 @@ var URLS = [
 
 URLS = URLS.map((v) => '/' + CACHE_NAME + v);
 
+self.onactivate = async event => event.waitUntil(self.clients.claim());
+
 self.oninstall = async () => {
     self.skipWaiting();
     log && console.log('[sw] installing cache: ' + CACHE_NAME);
