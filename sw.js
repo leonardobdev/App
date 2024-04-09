@@ -49,11 +49,11 @@ self.onfetch = async event => {
                                 log && console.log('[sw] fetching from cache: ' + request.url);
                                 response = cachedResponse
                             } else {
-                                log && console.log('[sw] deleting from cache: ' + request.url
-                                    + '[sw] adding on cache: ' + request.url
-                                    + '[sw] fetching from network: ' + request.url);
+                                log && console.log('[sw] deleting from cache: ' + request.url);
                                 await cache.delete(request);
+                                log && console.log('[sw] adding on cache: ' + request.url);
                                 await cache.add(request, updatedResponse);
+                                log && console.log('[sw] fetching from network: ' + request.url);
                                 response = updatedResponse;
                             }
                         } else {
@@ -67,11 +67,17 @@ self.onfetch = async event => {
                 } else {
                     if (navigator.onLine) {
                         let updatedResponse = await fetch(request);
-                        if (updatedResponse.status !== 200) {
+                        if (updatedResponse.status === 200) {
                             log && console.log('[sw] deleting from cache: ' + request.url);
                             await cache.delete(request);
+                        } else {
+                            log && console.log('[sw] adding on cache: ' + request.url);
+                            await cache.add(request, updatedResponse);
+                            log && console.log('[sw] fetching from network: ' + request.url);
+                            response = updatedResponse;
                         }
-                        log && console.log('[sw] fetching from network: ' + request.url);
+                    } else {
+                        log && console.log('[sw] trying fetching from network: ' + request.url);
                         response = updatedResponse;
                     }
                 }
