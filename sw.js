@@ -33,49 +33,22 @@ self.oninstall = async () => {
 };
 
 self.onfetch = async event => {
-    event.respondWith(
-        caches.open(CACHE_NAME).then(
-            async (cache) => {
-                let request = event.request;
-                let cachedResponse = await cache.match(request);
-                let response = '';
-                if (cachedResponse) {
-                    if (navigator.onLine) {
-                        let updatedResponse = await fetch(request);
-                        if (updatedResponse.status === 200) {
-                            let cachedEtag = cachedResponse.headers.get('etag');
-                            let updatedEtag = updatedResponse.headers.get('etag');
-                            if (cachedEtag === updatedEtag) {
-                                log && console.log('[sw] fetching from cache: ' + request.url);
-                                response = cachedResponse
-                            } else {
-                                log && console.log('[sw] deleting from cache: ' + request.url
-                                    + '[sw] adding on cache: ' + request.url
-                                    + '[sw] fetching from network: ' + request.url);
-                                await cache.delete(request);
-                                await cache.add(request, updatedResponse);
-                                response = updatedResponse;
-                            }
-                        } else {
-                            log && console.log('[sw] deleting from cache: ' + request.url);
-                            await cache.delete(request);
-                        }
-                    } else {
-                        log && console.log('[sw] fetching from cache: ' + request.url);
-                        response = cachedResponse
-                    }
-                } else {
-                    if (navigator.onLine) {
-                        let updatedResponse = await fetch(request);
-                        if (updatedResponse.status !== 200) {
-                            log && console.log('[sw] deleting from cache: ' + request.url);
-                            await cache.delete(request);
-                        }
-                        log && console.log('[sw] fetching from network: ' + request.url);
-                        response = updatedResponse;
-                    }
-                }
-                return response;
-            })
-    );
+    const cache = await caches.open(CACHE_NAME);
+    const cachedResponse = await cache.match(event.request);
+    const response = navigator.onLine
+        ? cachedResponse?.clone() || await fetch(event.request)
+        : cachedResponse;
+    if (navigator.onLine && cachedResponse && event.request.method !== 'POST') {
+        const updatedResponse = await fetch(event.request);
+        if (updatedResponse.ok && !await compareEtags(cachedResponse, updatedResponse)) {
+            await cache.put(event.request, updatedResponse.clone());
+        }
+    }
+    return response;
 };
+
+async function compareEtags(response1, response2) {
+    const etag1 = response1.headers.get('etag');
+    const etag2 = response2.headers.get('etag');
+    return etag1 === etag2;
+}
