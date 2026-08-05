@@ -1,5 +1,5 @@
 # App
-https://leonardobdev.github.io/app/
+https://leonardobdev.github.io/App/
 
 
 [App.apk](https://github.com/leonardobdev/App/raw/main/App.apk)
